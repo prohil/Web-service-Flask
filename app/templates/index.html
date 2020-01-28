@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block app_content %}
+<!--  Заголовок  -->
+<div class="row">
+    <div class="col-lg-6 col-lg-6">
+        <h1 align="left" style=" padding: 10px;">{{ title }}</h1>
+    </div>
+</div>
+<!--  Форма с распознаванием  -->
+<form class="form-inline" action="" method="POST">
+    <div class="col-sm-8">
+        {{ wtf.form_field(recognizeForm.address_field, class="form-control col-sm-12", placeholder='Введите адрес сайта') }}
+    </div>
+    <div class="col-sm-4">
+        {{ wtf.form_field(recognizeForm.btn_recognize, class="btn btn-primary col-sm-8", type="submit") }}
+    </div>
+</form>
+
+{% if session['Recognize_pressed']%}
+{% if session['Validate_recogn']%}
+    <p align="left" class="col-lg-2" style="margin-left: 10px; margin-top: 0px; margin-bottom: 0px;">
+        </p>
+    {% else %}
+    <div class="alert alert-warning alert-dismissible fade show col-lg-6" style="margin-left: 17px; margin-top: 5px;" role="alert">
+        <strong>Нужно ввести адрес сайта</strong>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    {% endif %}
+{% else %}
+<p align="left" class="col-lg-2" style="margin-left: 10px; margin-top: 0px; margin-bottom: 0px;"></p>
+{% endif %}
+
+<!--  Два баттона  -->
+<form class="form-inline" action="/" method="POST" style="margin-top: 2px; ">
+    <div class="btn-group col-lg-4" role="group" aria-label="Variants">
+        <button type="submit" class="btn btn-secondary col-lg-6" style="" name="btn_view_recognition">Распознавание</button>
+        <button type="submit" class="btn btn-secondary col-lg-6" name="btn_view_db">Просмотр базы</button>
+    </div>
+</form>
+
+{% if session['View_recognition'] %}
+{% if (session['Recognize_pressed']) and (session['Validate_recogn'])%}
+<div class="row">
+    <div class="col-lg-offset-2 col-lg-8 col-lg-offset-2" style="margin-top: 20px; margin-left: 17px;">
+    <div class="card">
+  <div class="card-header">
+    Сайт: {{ site }}
+  </div>
+  <ul class="list-group list-group-flush">
+    <li class="list-group-item">Категория: {{ category }}</li>
+  </ul>
+    </div>
+</div>
+</div>
+{% else %}
+<div class="row">
+    <div class="col-lg-offset-2 col-lg-8 col-lg-offset-2" style="margin-top: 20px; margin-left: 17px;">
+    <div class="card">
+  <div class="card-header">
+    Адрес сайта не введен
+  </div>
+    </div>
+</div>
+</div>
+{% endif %}
+{% endif %}
+
+{% if session['View_db'] %}
+<!--  Label категория и тд-->
+<form class="form-inline" action="/" method="POST" style="margin-top: 10px; ">
+    <div class="col-sm-2" style="">
+        <h5 align="left" class="col-lg-12" style="height: 20px;">Категории</h5>
+    </div>
+    <div class="col-sm-3" style="margin-left: 60px;">
+        {{ wtf.form_field(searchForm.site_search_field, class="form-control col-sm-12", placeholder='Поиск сайта в базе') }}
+    </div>
+    <div class="col-sm-2" >
+        {{ wtf.form_field(searchForm.btn_search, class="btn btn-secondary-primary col-sm-8", style=" ", type="submit") }}
+    </div>
+</form>
+
+<!--  Scroller категориям -->
+<form class="form-inline" action="/" method="POST">
+    <div class="" style="height: 340px; overflow-y: scroll; width:300px margin-left: 40px;">
+        {% for i in range(77) %}
+        <div class="col-auto">
+            <button class="btn btn-secondary" name={{i}} type="submit" style="width:210px; margin-top: 5px;">{{btn_names[i]}}</button>
+        </div>
+        {% endfor %}
+    </div>
+    <div class="col-lg-9" style="width:250px; padding: 10px; overflow-y: auto;height: 340px;">
+        <table class="col-lg-12" style=" width:250px;  padding: 10px;">
+            {%if session['Categories_scroll']%}
+                <thead>
+                    <td style="padding-right:10px; padding-left:10px;"><strong>№</strong></td>
+                    <td style="padding-right:10px; padding-left:10px;"><strong>{{ category_pressed }}</strong></td>
+
+                </thead>
+                <tbody>
+                {% for item in sites %}
+                <tr>
+                    <td style="padding-right:10px; padding-left:10px; padding-top:5px;"> <strong>{{ loop.index }}</strong></td>
+                    <td>{{ item[0] }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+            {% endif%}
+
+            {%if ((session['Search_pressed']) and (session['Validate_search']))%}
+                <tbody>
+                <tr>
+                    {%if not search_result %}
+                    <td>
+                         Сайт не найден
+                    </td>
+                        {% else %}
+                    <td>
+                         Сайт успешно найден
+                    </td>
+                    {% endif%}
+                </tr>
+                </tbody>
+                </table>
+                    {%if search_result %}
+                        {% for item in search_result %}
+                            <p style="padding-right:10px; padding-left:10px; padding-top:5px; width:300px"><strong>Категория: </strong>{{ item[0] }}</p>
+                        {% endfor %}
+                    {% endif%}
+            {% endif%}
+    </div>
+</form>
+{% endif %}
+
+
+{% endblock %}

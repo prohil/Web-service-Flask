@@ -1,0 +1,165 @@
+Черновик
+title
+<div class="col-lg-offset-3 col-lg-4">
+поле
+<div class="col-lg-offset-2 col-lg-8 col-lg-offset-2 ">
+батон
+<div class="col-lg-offset-4 col-lg-8">
+
+  {% for message in form.message.errors %}
+    <div class="flash">{{ message }}</div>
+  {% endfor %}
+        <input class="btn btn-primary col-sm-8" name="btn_recognize" type="submit" value="Распознать">
+
+__tablename__ = 'right'
+
+
+
+
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(64), index=True, unique=True)
+    email = db.Column(db.String(120), index=True, unique=True)
+    password_hash = db.Column(db.String(128))
+    posts = db.relationship('Post', backref='author', lazy='dynamic')
+
+    def __repr__(self):
+        return '<User {}>'.format(self.username)
+
+class Post(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    body = db.Column(db.String(140))
+    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+
+    def __repr__(self):
+        return '<Post {}>'.format(self.body)
+
+
+        class User(UserMixin, db.Model):
+    # ...
+    followed = db.relationship(
+        'User', secondary=followers,
+        primaryjoin=(followers.c.follower_id == id),
+        secondaryjoin=(followers.c.followed_id == id),
+        backref=db.backref('followers', lazy='dynamic'), lazy='dynamic')
+
+ action="/index" method="POST"
+{{ wtf.form_field(form.submit, class="btn btn-primary col-sm-8") }}
+<form action="" method="post">
+    {{ form.hidden_tag() }}
+    <!--  -->
+    <div class="row">
+        <div class="col-lg-offset-2 col-lg-8 col-lg-offset-2">
+            {% if button_pressed %}
+            <div class="panel panel-default">
+                <div class="panel-heading">Site: {{ site }}</div>
+                <div class="panel-body">
+                    Category: {{ category }} <br><br>
+                    Accuracy: {{ accuracy }}
+                </div>
+            </div>
+            {% else %}
+
+            {% endif %}
+        </div>
+    </div>
+</form>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   .btn{margin-bottom: 70px;
+   }
+
+{{ wtf.form_field(form.submit, class="btn btn-primary btn-lg col-xs-offset-1 col-xs-3") }}
+
+   body {
+    margin: 0; /* Убираем отступы */
+   }
+   h1 {
+    margin-top: 20px;
+    margin: 0; /* Нулевые отступы вокруг текста */
+    padding: 10px; /* Поля вокруг текста */
+   }
+
+{{ wtf.form_field(form.address_field, form_type="form-search", placeholder='Type an address of site') }}
+{{ wtf.form_field(form.submit, class="btn btn-primary btn-lg") }}
+
+{{ wtf.form_field(form.address_field, form_type="form-search",class="col-lg-offset-2 col-lg-8 ", placeholder='Type an address of site') }}
+                {{ wtf.form_field(form.submit, class="btn btn-primary btn-lg col-lg-offset-5 col-lg-2") }}
+
+
+{% endblock %}
+   #    if form.validate_on_submit():
+#        flash('Login requested for user {}, remember_me={}'.format(
+#            form.username.data, form.remember_me.data))
+#        return redirect(url_for('index'))
+#try:
+#        urllib.request.urlopen('адрес')
+#except ValueError:
+#        print("Oops!  That was no valid adress.  Try again...")
+
+
+<div class="text-center">
+            <div class="spinner-border" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
+        </div>
+
+    #sites = Classes.query.filter(Classes.sites.any(title='myfritz.net')).all()
+    #sites = Site.query.filter_by(title='myfritz.net').first()
+    #print(sites.classes)
+    #site_udal = Site.query.filter_by(classes='Удаленное управление').first()
+    #chat.query.join(user.chats).filter(user.id == 1).all()
+    #cla = Classes.query.filter_by(title='Удаленное управление').first()
+    #site_udal = Classes.query.join(Site.classes).filter(Classes.id==68).first()
+    #existing = User.query.join(User.spaces).filter(User.username == 'Bob', Space.name == 'Mainspace').first()
+    #user = User.query.filter_by(username=username).first_or_404()
+
+classes = Classes.query.all()
+    #sites = Classes.query.filter(Classes.sites.any(title='myfritz.net')).all()
+    sites = Site.query.filter_by(title='myfritz.net').first()
+    #print(sites.classes)
+    #site_udal = Site.query.filter_by(classes='Удаленное управление').first()
+    #chat.query.join(user.chats).filter(user.id == 1).all()
+    cla = Classes.query.filter_by(title='Удаленное управление').first()
+    site_udal = Classes.query.join(Site.classes).filter(Classes.id==68).first()
+    #existing = User.query.join(User.spaces).filter(User.username == 'Bob', Space.name == 'Mainspace').first()
+    #user = User.query.filter_by(username=username).first_or_404()
+
+
+        <div class="pagination">
+            <ul>
+                <li class ="previous disabled unavailable"> <a>&laquo;</a></li>
+                <li class ="active" > <a> 1 </a> </li>
+                <li> <a href="/index?page=2" > 2 </a> </li>
+                <li class ="next"><a href="/index?page=2"> &raquo; </a></li>
+            </ul>
+        </div>
+
+class Site(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(64), index=True)
+    classes = db.relationship('Classes', secondary=site_classes,
+                          backref=db.backref('sites', lazy='subquery'))
+    def __repr__(self):
+        return '<Site {}>'.format(self.title)
+
+class Classes(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(64), index=True)
+    def __repr__(self):
+        return '<Classes {}>'.format(self.title)
